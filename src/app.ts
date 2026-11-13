@@ -37,7 +37,6 @@ export async function buildApp(opts: AppOptions) {
       const incoming = req.headers["x-request-id"];
       return typeof incoming === "string" && /^[\w-]{1,64}$/.test(incoming) ? incoming : randomUUID();
     },
-    requestIdLogLabel: "requestId",
   }).withTypeProvider<ZodTypeProvider>();
 
   app.setValidatorCompiler(validatorCompiler);
@@ -116,6 +115,7 @@ export async function buildApp(opts: AppOptions) {
   app.get(
     "/health",
     {
+      logLevel: "warn", // probed every few seconds by Docker; keep it out of the logs
       schema: {
         tags: ["Operação"],
         summary: "Saúde da API e do banco",

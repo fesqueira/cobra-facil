@@ -4,10 +4,10 @@
   "description": "API de cobranças Pix com idempotência, webhooks assinados e outbox. Node.js, TypeScript, Fastify e PostgreSQL.",
   "scripts": {
     "dev": "tsx watch --env-file-if-exists=.env src/server.ts",
-    "build": "tsc -p tsconfig.build.json",
+    "build": "tsc -p tsconfig.build.json && node -e \"require('fs').cpSync('src/db/migrations','dist/db/migrations',{recursive:true})\"",
     "start": "node dist/server.js",
     "migrate": "tsx --env-file-if-exists=.env src/db/migrate.ts",
-    "seed": "tsx --env-file-if-exists=.env scripts/seed.ts",
+    "demo": "tsx --env-file-if-exists=.env scripts/demo.ts",
     "openapi": "tsx scripts/openapi.ts",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
@@ -45,5 +45,18 @@
   "license": "MIT",
   "engines": {
     "node": ">=22"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fesqueira/cobra-facil.git"
+  },
+  "keywords": [
+    "pix",
+    "api",
+    "fastify",
+    "typescript",
+    "postgresql",
+    "webhooks",
+    "idempotency"
+  ]
 }

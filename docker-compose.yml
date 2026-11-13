@@ -1,0 +1,35 @@
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: cobra
+      POSTGRES_PASSWORD: cobra
+      POSTGRES_DB: cobra
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cobra"]
+      interval: 2s
+      timeout: 3s
+      retries: 20
+
+  api:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://cobra:cobra@db:5432/cobra
+      ADMIN_TOKEN: ${ADMIN_TOKEN:-troque-este-token-admin}
+      PSP_WEBHOOK_SECRET: ${PSP_WEBHOOK_SECRET:-troque-este-segredo-do-psp}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    ports:
+      - "3000:3000"
+    # Lets the API deliver webhooks to a receiver running on the host (npm run demo).
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+volumes:
+  pgdata:
