@@ -28,7 +28,8 @@ CREATE TABLE charges (
   updated_at     timestamptz NOT NULL DEFAULT now()
 );
 
-CREATE INDEX charges_merchant_created_idx ON charges (merchant_id, created_at DESC);
+-- Serves the cursor pagination of GET /v1/charges (newest first, id breaks ties).
+CREATE INDEX charges_merchant_created_idx ON charges (merchant_id, created_at DESC, id DESC);
 -- Partial index: the expiration job only ever looks at pending charges.
 CREATE INDEX charges_pending_expiry_idx ON charges (expires_at) WHERE status = 'pending';
 
